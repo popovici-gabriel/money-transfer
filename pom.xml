@@ -16,7 +16,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <start.class>com.bank.StartBank</start.class>
+        <start.class>com.bank.BankApplication</start.class>
         <hikaricp.version>3.2.0</hikaricp.version>
         <junit-jupiter.version>5.3.2</junit-jupiter.version>
         <mockito.version>2.23.4</mockito.version>
