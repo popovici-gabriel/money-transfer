@@ -33,4 +33,8 @@ public class ApplicationProperties {
     public static Properties readDatabaseProperties() {
         return readProperties("src/main/resources/db.properties");
     }
+
+    public static Properties readApplicationProperties() {
+        return readProperties("src/main/resources/application.properties");
+    }
 }

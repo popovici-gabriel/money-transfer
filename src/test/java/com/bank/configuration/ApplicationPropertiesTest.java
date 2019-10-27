@@ -14,7 +14,6 @@ class ApplicationPropertiesTest {
         Assertions.assertThrows(ConfigurationError.class, () -> ApplicationProperties.readProperties("db.properties"));
     }
 
-
     @Test
     @DisplayName("Should return a Properties object")
     void shouldNotBeEmpty() {
@@ -26,5 +25,11 @@ class ApplicationPropertiesTest {
     void shouldReturnDriverProperty() {
         assertThat(ApplicationProperties.readProperties("src/main/resources/db.properties").getProperty("dataSource.driverClassName")).isNotEmpty();
         assertThat(ApplicationProperties.readProperties("src/main/resources/db.properties").getProperty("dataSource.driverClassName")).isEqualToIgnoringCase("org.h2.Driver");
+    }
+
+    @Test
+    @DisplayName("Should read port")
+    void shouldReadPort() {
+        assertThat(ApplicationProperties.readApplicationProperties().getProperty("port")).isNotNull();
     }
 }

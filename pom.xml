@@ -21,9 +21,22 @@
         <hikaricp.version>3.2.0</hikaricp.version>
         <junit-jupiter.version>5.3.2</junit-jupiter.version>
         <mockito.version>2.23.4</mockito.version>
+        <cxf.version>3.3.3</cxf.version>
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxrs</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http-jetty</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
