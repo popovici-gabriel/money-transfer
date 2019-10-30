@@ -10,7 +10,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-@Path("/user")
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+
+@Path("/users")
 @Produces("application/json")
 public class UserResource {
 
@@ -20,7 +22,10 @@ public class UserResource {
 
     @GET
     @Path("/{" + USER_ID_PARAM + "}")
-    public Response getCourse(@PathParam(USER_ID_PARAM) Long userId) {
+    public Response getUser(@PathParam(USER_ID_PARAM) Long userId) {
+        if (userId == null) {
+            return Response.status(BAD_REQUEST).build();
+        }
         LOGGER.debug("GET userId [{}]", userId);
         final var user = User
                 .builder()
@@ -29,6 +34,8 @@ public class UserResource {
                 .userName("gabe")
                 .build();
 
-        return Response.ok(user).build();
+        return Response
+                .ok(user)
+                .build();
     }
 }
