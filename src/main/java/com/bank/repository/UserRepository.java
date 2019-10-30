@@ -5,13 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
 public class UserRepository {
@@ -31,7 +32,9 @@ public class UserRepository {
              final var statement = connection.prepareStatement(GET_ALL_USERS_SQL)) {
             List list = new LinkedList();
             try (final var resultSet = statement.executeQuery()) {
+                boolean found = false;
                 while (resultSet.next()) {
+                    found = true;
                     list.add(User
                             .builder()
                             .userId(resultSet.getLong("UserId"))
@@ -39,7 +42,10 @@ public class UserRepository {
                             .emailAddress(resultSet.getString("EmailAddress"))
                             .build());
                 }
-                return Collections.unmodifiableList(list);
+                if (found) {
+                    return unmodifiableList(list);
+                }
+                return emptyList();
             }
         } catch (SQLException e) {
             throw new DataAccessError(format("Error when performing %s ", GET_ALL_USERS_SQL), e);

@@ -1,18 +1,12 @@
 package com.bank.repository;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 
-class DataSourceConnectionTest {
-
-    @AfterAll
-    public static void tearDown() {
-        org.junit.jupiter.api.Assertions.assertDoesNotThrow(DataSourceConnection::shutdown);
-    }
+class DataSourceConnectionIT {
 
 
     @Test

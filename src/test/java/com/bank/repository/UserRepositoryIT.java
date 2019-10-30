@@ -1,7 +1,6 @@
 package com.bank.repository;
 
 import com.bank.domain.User;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,11 +14,6 @@ class UserRepositoryIT {
     void setUp() {
         userRepository = new UserRepository();
         userRepository.deleteAll();
-    }
-
-    @AfterAll
-    static void tearDown() {
-        DataSourceConnection.shutdown();
     }
 
     @Test
