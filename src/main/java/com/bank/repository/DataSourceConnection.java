@@ -6,14 +6,20 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+
+import static org.h2.tools.RunScript.execute;
 
 public class DataSourceConnection {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceConnection.class);
 
     private static HikariConfig hikariConfig = new HikariConfig();
+
+    private static final HikariDataSource HIKARI_DATA_SOURCE;
 
     static {
         final var properties = ApplicationProperties.readDatabaseProperties();
@@ -27,9 +33,9 @@ public class DataSourceConnection {
         hikariConfig.setMaximumPoolSize(Integer.parseInt(properties.getProperty("dataSource.maximumPoolSize")));
         hikariConfig.setMinimumIdle(Integer.parseInt(properties.getProperty("dataSource.minimumIdle")));
         hikariConfig.setPoolName(properties.getProperty("dataSource.poolName"));
+        HIKARI_DATA_SOURCE = new HikariDataSource(hikariConfig);
+        initDatabaseSchema();
     }
-
-    private static final HikariDataSource HIKARI_DATA_SOURCE = new HikariDataSource(hikariConfig);
 
     public static Connection getConnection() throws SQLException {
         LOGGER.debug("About to retrieve connection");
@@ -41,4 +47,15 @@ public class DataSourceConnection {
         HIKARI_DATA_SOURCE.close();
     }
 
+    private static void initDatabaseSchema() {
+        LOGGER.info("About to initialize database");
+        try (Connection connection = getConnection()) {
+            execute(connection, new FileReader("src/main/resources/init.sql"));
+        } catch (SQLException e) {
+            throw new DataAccessError("Error executing init script", e);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Init script not found", e);
+        }
+        LOGGER.info("Database init done");
+    }
 }

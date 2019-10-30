@@ -1,5 +1,6 @@
 package com.bank.server;
 
+import com.bank.repository.UserRepository;
 import com.bank.resource.UserResource;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.jaxrs.JAXRSServerFactoryBean;
@@ -15,7 +16,7 @@ public class RestfulServer {
         JAXRSServerFactoryBean factoryBean = new JAXRSServerFactoryBean();
         factoryBean.setAddress(address());
         factoryBean.setResourceClasses(UserResource.class);
-        factoryBean.setResourceProvider(new SingletonResourceProvider(new UserResource()));
+        factoryBean.setResourceProvider(new SingletonResourceProvider(new UserResource(new UserRepository())));
         server = factoryBean.create();
     }
 
