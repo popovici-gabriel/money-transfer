@@ -5,6 +5,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -22,6 +25,26 @@ public class UserRepository {
     private final static String UPDATE_USER_SQL = "UPDATE User SET UserName = ?, EmailAddress = ? WHERE UserId = ? ";
     private final static String DELETE_USER_BY_ID_SQL = "DELETE FROM User WHERE UserId = ? ";
     private final static String DELETE_ALL = "DELETE FROM User";
+
+    public List<User> getAllUsers() {
+        try (final var connection = DataSourceConnection.getConnection();
+             final var statement = connection.prepareStatement(GET_ALL_USERS_SQL)) {
+            List list = new LinkedList();
+            try (final var resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    list.add(User
+                            .builder()
+                            .userId(resultSet.getLong("UserId"))
+                            .userName(resultSet.getString("UserName"))
+                            .emailAddress(resultSet.getString("EmailAddress"))
+                            .build());
+                }
+                return Collections.unmodifiableList(list);
+            }
+        } catch (SQLException e) {
+            throw new DataAccessError(format("Error when performing %s ", GET_ALL_USERS_SQL), e);
+        }
+    }
 
 
     public Optional<User> findById(Long id) {
