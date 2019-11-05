@@ -1,5 +1,6 @@
 package com.bank.domain;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import javax.money.CurrencyUnit;
@@ -32,6 +33,18 @@ class AccountTest {
         // act
         assertThat(success).isTrue();
         assertThat(account.getBalance()).isEqualTo(of(150, USD));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentException() {
+        Account account = new Account(1, "GP", of(200, USD));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> account.credit(of(-200, USD)));
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenDebit() {
+        Account account = new Account(1, "GP", of(200, USD));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> account.debit(of(-200, USD)));
     }
 
 }
