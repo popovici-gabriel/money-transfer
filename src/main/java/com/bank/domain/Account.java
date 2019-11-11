@@ -1,15 +1,12 @@
 package com.bank.domain;
 
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.StampedLock;
 import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import static com.bank.domain.Validator.validateAmountNotNegative;
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static com.bank.domain.Validator.validateAmountNotNegative;
 
 public class Account {
     private static final Logger LOGGER = LoggerFactory.getLogger(Account.class);
@@ -20,7 +17,7 @@ public class Account {
 
     private Money balance;
 
-    private final transient Lock lock;
+    private final StampedLock lock;
 
     public Account(long accountId, String userId, Money balance) {
         requireNonNull(accountId, "Id cannot be null");
@@ -31,7 +28,7 @@ public class Account {
         this.accountId = accountId;
         this.userId = userId;
         this.balance = balance;
-        this.lock = new ReentrantLock();
+        this.lock = new StampedLock();
     }
 
     public long getAccountId() {
@@ -43,34 +40,29 @@ public class Account {
     }
 
     public Money getBalance() {
-        lock.lock();
+        final var stamp = lock.readLock();
         try {
             return balance;
         } finally {
-            lock.unlock();
+            lock.unlock(stamp);
         }
     }
 
-    public Lock getLock() {
-        return lock;
+    public Lock acquireLock() {
+        return lock.asWriteLock();
     }
 
     public boolean debit(Money amount) {
         requireNonNull(amount, "Amount should not be empty");
         validateAmountNotNegative(amount);
+        final var stamp = lock.writeLock();
         try {
-            var locked = lock.tryLock(1, SECONDS);
-            try {
-                if (locked && balance.compareTo(amount) > 0) {
-                    balance = balance.subtract(amount);
-                    return true;
-                }
-            } finally {
-                lock.unlock();
+            if (balance.compareTo(amount) > 0) {
+                balance = balance.subtract(amount);
+                return true;
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LOGGER.error("Error locking resource", e);
+        } finally {
+            lock.unlockWrite(stamp);
         }
         return false;
     }
@@ -78,20 +70,12 @@ public class Account {
     public boolean credit(Money amount) {
         requireNonNull(amount, "Amount should not be empty");
         validateAmountNotNegative(amount);
+        final var locked = lock.writeLock();
         try {
-            var locked = lock.tryLock(1, SECONDS);
-            try {
-                if (locked) {
-                    balance = balance.add(amount);
-                    return true;
-                }
-            } finally {
-                lock.unlock();
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            LOGGER.error("Error locking resource", e);
+            balance = balance.add(amount);
+            return true;
+        } finally {
+            lock.unlockWrite(locked);
         }
-        return false;
     }
 }
