@@ -4,6 +4,7 @@ import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.StringJoiner;
 import java.util.concurrent.locks.StampedLock;
 
 import static com.bank.domain.Validator.validateAmountNotNegative;
@@ -78,5 +79,14 @@ public class Account {
         } finally {
             lock.unlockWrite(locked);
         }
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Account.class.getSimpleName() + "[", "]")
+                .add("accountId=" + accountId)
+                .add("userId='" + userId + "'")
+                .add("balance=" + balance)
+                .toString();
     }
 }

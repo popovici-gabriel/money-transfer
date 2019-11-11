@@ -1,15 +1,19 @@
 package com.bank.domain;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.money.CurrencyUnit;
 import javax.money.Monetary;
+import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 import static org.javamoney.moneta.Money.of;
 
 class AccountTest {
@@ -64,4 +68,26 @@ class AccountTest {
         assertThat(account.getBalance()).isEqualTo(of(0, USD));
     }
 
+
+    @RepeatedTest(3)
+    void shouldOutputSameBalance() throws InterruptedException {
+        final var operations = new CountDownLatch(2);
+        var account = new Account(1, "GP", of(120, USD));
+        Runnable creditRunnable = () -> {
+            account.credit(of(20, USD));
+            operations.countDown();
+        };
+        Runnable debitRunnable = () -> {
+            account.debit(of(100, USD));
+            operations.countDown();
+        };
+
+        Thread credit = new Thread(creditRunnable, "credit");
+        Thread debit = new Thread(debitRunnable, "debit");
+        credit.start();
+        debit.start();
+        // then
+        await().atMost(2, SECONDS).until(() -> operations.getCount() == 0);
+        org.assertj.core.api.Assertions.assertThat(account.getBalance()).isEqualTo(of(40, USD));
+    }
 }
