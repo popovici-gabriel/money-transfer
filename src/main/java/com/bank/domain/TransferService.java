@@ -1,8 +1,10 @@
 package com.bank.domain;
 
+import org.javamoney.moneta.Money;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import org.javamoney.moneta.Money;
+
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
@@ -27,8 +29,8 @@ public class TransferService {
 
     private static final int DELAY_RANDOM = 2;
 
-    public boolean transferMoney(Account fromAcct,
-                                 Account toAcct,
+    public boolean transferMoney(Account fromAccount,
+                                 Account toAccount,
                                  Money amount,
                                  long timeout,
                                  TimeUnit unit)
@@ -38,25 +40,25 @@ public class TransferService {
         long stopTime = System.nanoTime() + unit.toNanos(timeout);
 
         while (true) {
-            final var fromStamp = fromAcct.acquireLock().tryWriteLock(timeout, unit);
+            final var fromStamp = fromAccount.acquireLock().tryWriteLock(timeout, unit);
             if (fromStamp != 0) {
                 try {
-                    final var toStamp = toAcct.acquireLock().tryWriteLock(timeout, unit);
+                    final var toStamp = toAccount.acquireLock().tryWriteLock(timeout, unit);
                     if (toStamp != 0) {
                         try {
-                            if (fromAcct.getBalance().compareTo(amount) < 0)
+                            if (fromAccount.getBalance().compareTo(amount) < 0) {
                                 throw new InsufficientFundsException();
-                            else {
-                                fromAcct.debit(amount);
-                                toAcct.credit(amount);
+                            } else {
+                                fromAccount.debit(amount);
+                                toAccount.credit(amount);
                                 return true;
                             }
                         } finally {
-                            toAcct.acquireLock().unlockWrite(toStamp);
+                            toAccount.acquireLock().unlockWrite(toStamp);
                         }
                     }
                 } finally {
-                    fromAcct.acquireLock().unlockWrite(fromStamp);
+                    fromAccount.acquireLock().unlockWrite(fromStamp);
                 }
             }
             if (System.nanoTime() < stopTime) {
@@ -67,11 +69,11 @@ public class TransferService {
         }
     }
 
-    static long getFixedDelayComponentNanos(long timeout, TimeUnit unit) {
+    private static long getFixedDelayComponentNanos(long timeout, TimeUnit unit) {
         return DELAY_FIXED;
     }
 
-    static long getRandomDelayModulusNanos(long timeout, TimeUnit unit) {
+    private static long getRandomDelayModulusNanos(long timeout, TimeUnit unit) {
         return DELAY_RANDOM;
     }
 
