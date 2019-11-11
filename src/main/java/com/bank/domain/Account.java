@@ -48,8 +48,8 @@ public class Account {
         }
     }
 
-    public Lock acquireLock() {
-        return lock.asWriteLock();
+    public StampedLock acquireLock() {
+        return lock;
     }
 
     public boolean debit(Money amount) {

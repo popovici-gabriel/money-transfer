@@ -38,9 +38,11 @@ public class TransferService {
         long stopTime = System.nanoTime() + unit.toNanos(timeout);
 
         while (true) {
-            if (fromAcct.acquireLock().tryLock(timeout, unit)) {
+            final var fromStamp = fromAcct.acquireLock().tryWriteLock(timeout, unit);
+            if (fromStamp != 0) {
                 try {
-                    if (toAcct.acquireLock().tryLock(timeout, unit)) {
+                    final var toStamp = toAcct.acquireLock().tryWriteLock(timeout, unit);
+                    if (toStamp != 0) {
                         try {
                             if (fromAcct.getBalance().compareTo(amount) < 0)
                                 throw new InsufficientFundsException();
@@ -50,11 +52,11 @@ public class TransferService {
                                 return true;
                             }
                         } finally {
-                            toAcct.acquireLock().unlock();
+                            toAcct.acquireLock().unlockWrite(toStamp);
                         }
                     }
                 } finally {
-                    fromAcct.acquireLock().unlock();
+                    fromAcct.acquireLock().unlockWrite(fromStamp);
                 }
             }
             if (System.nanoTime() < stopTime) {
