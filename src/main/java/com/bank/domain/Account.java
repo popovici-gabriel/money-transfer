@@ -1,12 +1,13 @@
 package com.bank.domain;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.StampedLock;
 import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import static java.util.Objects.requireNonNull;
+
+import java.util.concurrent.locks.StampedLock;
+
 import static com.bank.domain.Validator.validateAmountNotNegative;
+import static java.util.Objects.requireNonNull;
 
 public class Account {
     private static final Logger LOGGER = LoggerFactory.getLogger(Account.class);
@@ -44,7 +45,7 @@ public class Account {
         try {
             return balance;
         } finally {
-            lock.unlock(stamp);
+            lock.unlockRead(stamp);
         }
     }
 
@@ -57,7 +58,7 @@ public class Account {
         validateAmountNotNegative(amount);
         final var stamp = lock.writeLock();
         try {
-            if (balance.compareTo(amount) > 0) {
+            if (balance.compareTo(amount) >= 0) {
                 balance = balance.subtract(amount);
                 return true;
             }
