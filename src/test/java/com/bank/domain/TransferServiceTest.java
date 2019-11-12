@@ -1,15 +1,13 @@
 package com.bank.domain;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.javamoney.moneta.Money.of;
@@ -25,7 +23,7 @@ class TransferServiceTest {
         classUnderTest = new TransferService();
     }
 
-    @Test
+    @RepeatedTest(3)
     void shouldOutputSameBalanceWheTransferMoneyMultipleTimes() throws InsufficientFundsException, InterruptedException {
         // given
         Account from = new Account(1, "FROM", of(100, USD));

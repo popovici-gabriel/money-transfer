@@ -1,14 +1,13 @@
 package com.bank.domain;
 
+import java.util.StringJoiner;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.javamoney.moneta.Money;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.StringJoiner;
-import java.util.concurrent.locks.StampedLock;
-
-import static com.bank.domain.Validator.validateAmountNotNegative;
 import static java.util.Objects.requireNonNull;
+import static com.bank.domain.Validator.validateAmountNotNegative;
 
 public class Account {
     private static final Logger LOGGER = LoggerFactory.getLogger(Account.class);
@@ -19,7 +18,7 @@ public class Account {
 
     private Money balance;
 
-    private final StampedLock lock;
+    private final ReadWriteLock lock;
 
     public Account(long accountId, String userId, Money balance) {
         requireNonNull(accountId, "Id cannot be null");
@@ -30,7 +29,7 @@ public class Account {
         this.accountId = accountId;
         this.userId = userId;
         this.balance = balance;
-        this.lock = new StampedLock();
+        this.lock = new ReentrantReadWriteLock();
     }
 
     public long getAccountId() {
@@ -42,29 +41,29 @@ public class Account {
     }
 
     public Money getBalance() {
-        final var stamp = lock.readLock();
+        lock.readLock().lock();
         try {
             return balance;
         } finally {
-            lock.unlockRead(stamp);
+            lock.readLock().unlock();
         }
     }
 
-    public StampedLock acquireLock() {
+    public ReadWriteLock acquireLock() {
         return lock;
     }
 
     public boolean debit(Money amount) {
         requireNonNull(amount, "Amount should not be empty");
         validateAmountNotNegative(amount);
-        final var stamp = lock.writeLock();
+        lock.writeLock().lock();
         try {
             if (balance.compareTo(amount) >= 0) {
                 balance = balance.subtract(amount);
                 return true;
             }
         } finally {
-            lock.unlockWrite(stamp);
+            lock.writeLock().unlock();
         }
         return false;
     }
@@ -72,12 +71,12 @@ public class Account {
     public boolean credit(Money amount) {
         requireNonNull(amount, "Amount should not be empty");
         validateAmountNotNegative(amount);
-        final var locked = lock.writeLock();
+        lock.writeLock().lock();
         try {
             balance = balance.add(amount);
             return true;
         } finally {
-            lock.unlockWrite(locked);
+            lock.writeLock().unlock();
         }
     }
 

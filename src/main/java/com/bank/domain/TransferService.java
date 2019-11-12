@@ -1,10 +1,8 @@
 package com.bank.domain;
 
-import org.javamoney.moneta.Money;
-
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-
+import org.javamoney.moneta.Money;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
@@ -40,11 +38,9 @@ public class TransferService {
         long stopTime = System.nanoTime() + unit.toNanos(timeout);
 
         while (true) {
-            final var fromStamp = fromAccount.acquireLock().tryWriteLock(timeout, unit);
-            if (fromStamp != 0) {
+            if (fromAccount.acquireLock().writeLock().tryLock(timeout, unit)) {
                 try {
-                    final var toStamp = toAccount.acquireLock().tryWriteLock(timeout, unit);
-                    if (toStamp != 0) {
+                    if (toAccount.acquireLock().writeLock().tryLock(timeout, unit)) {
                         try {
                             if (fromAccount.getBalance().compareTo(amount) < 0) {
                                 throw new InsufficientFundsException();
@@ -54,11 +50,11 @@ public class TransferService {
                                 return true;
                             }
                         } finally {
-                            toAccount.acquireLock().unlockWrite(toStamp);
+                            toAccount.acquireLock().writeLock().unlock();
                         }
                     }
                 } finally {
-                    fromAccount.acquireLock().unlockWrite(fromStamp);
+                    fromAccount.acquireLock().writeLock().unlock();
                 }
             }
             if (System.nanoTime() < stopTime) {
