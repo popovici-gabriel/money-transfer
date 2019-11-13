@@ -59,6 +59,7 @@ public class Account {
         lock.writeLock().lock();
         try {
             if (balance.compareTo(amount) >= 0) {
+                LOGGER.debug("About to subtract amount [{}]", amount);
                 balance = balance.subtract(amount);
                 return true;
             }
@@ -73,6 +74,7 @@ public class Account {
         validateAmountNotNegative(amount);
         lock.writeLock().lock();
         try {
+            LOGGER.debug("About to add amount [{}]", amount);
             balance = balance.add(amount);
             return true;
         } finally {
