@@ -3,6 +3,7 @@ package com.bank.domain;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import org.javamoney.moneta.Money;
+import static java.lang.String.format;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 
 /**
@@ -42,8 +43,8 @@ public class TransferService {
                 try {
                     if (toAccount.acquireLock().writeLock().tryLock(timeout, unit)) {
                         try {
-                            if (fromAccount.getBalance().compareTo(amount) < 0) {
-                                throw new InsufficientFundsException();
+                            if (fromAccount.getBalance().isLessThanOrEqualTo(amount)) {
+                                throw new InsufficientFundsException(format("Insufficient funds from account %s", fromAccount));
                             } else {
                                 fromAccount.debit(amount);
                                 toAccount.credit(amount);

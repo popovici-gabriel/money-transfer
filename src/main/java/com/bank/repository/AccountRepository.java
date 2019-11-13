@@ -28,7 +28,7 @@ public class AccountRepository {
         return accounts.remove(accountId);
     }
 
-    public Account findByAccountId(long accountId) {
+    public Account findByAccountId(long accountId) throws AccountNotFound {
         final var account = accounts.getOrDefault(accountId, EMPTY_ACCOUNT);
         if (account.isEmptyAccount()) {
             throw new AccountNotFound(String.format("Account %s not found", account));
