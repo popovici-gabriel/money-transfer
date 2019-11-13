@@ -1,14 +1,12 @@
 package com.bank.repository;
 
 import com.bank.domain.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import static java.lang.String.format;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.util.Collections.emptyList;
@@ -17,15 +15,15 @@ import static java.util.Objects.requireNonNull;
 
 public class UserRepository {
 
-    private static Logger log = LoggerFactory.getLogger(UserRepository.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserRepository.class);
 
-    private final static String FIND_USER_BY_ID_SQL = "SELECT * FROM User WHERE UserId = ? ";
-    private final static String GET_ALL_USERS_SQL = "SELECT * FROM User";
-    private final static String GET_USER_BY_NAME_SQL = "SELECT * FROM User WHERE UserName = ? ";
-    private final static String INSERT_USER_SQL = "INSERT INTO User (UserName, EmailAddress) VALUES (?, ?)";
-    private final static String UPDATE_USER_SQL = "UPDATE User SET UserName = ?, EmailAddress = ? WHERE UserId = ? ";
-    private final static String DELETE_USER_BY_ID_SQL = "DELETE FROM User WHERE UserId = ? ";
-    private final static String DELETE_ALL = "DELETE FROM User";
+    private static final String FIND_USER_BY_ID_SQL = "SELECT * FROM User WHERE UserId = ? ";
+    private static final String GET_ALL_USERS_SQL = "SELECT * FROM User";
+    private static final String GET_USER_BY_NAME_SQL = "SELECT * FROM User WHERE UserName = ? ";
+    private static final String INSERT_USER_SQL = "INSERT INTO User (UserName, EmailAddress) VALUES (?, ?)";
+    private static final String UPDATE_USER_SQL = "UPDATE User SET UserName = ?, EmailAddress = ? WHERE UserId = ? ";
+    private static final String DELETE_USER_BY_ID_SQL = "DELETE FROM User WHERE UserId = ? ";
+    private static final String DELETE_ALL = "DELETE FROM User";
 
     public List<User> getAllUsers() {
         try (final var connection = DataSourceConnection.getConnection();

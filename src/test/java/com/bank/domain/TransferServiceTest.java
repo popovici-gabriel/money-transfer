@@ -4,19 +4,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static com.bank.domain.Account.USD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.javamoney.moneta.Money.of;
 
 class TransferServiceTest {
-
-    private static final CurrencyUnit USD = Monetary.getCurrency("USD");
 
     private static ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
 
@@ -45,7 +42,7 @@ class TransferServiceTest {
             try {
                 classUnderTest.transferMoney(from, to, of(50, USD), 1, TimeUnit.SECONDS);
             } catch (InsufficientFundsException | InterruptedException e) {
-                throw new RuntimeException("fail test");
+                throw new AssertionError("Transfer error");
             } finally {
                 operation.countDown();
             }

@@ -1,24 +1,19 @@
 package com.bank.domain;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.IntStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.IntStream;
-
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static com.bank.domain.Account.USD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.javamoney.moneta.Money.of;
 
 class AccountTest {
-
-    private static final CurrencyUnit USD = Monetary.getCurrency("USD");
 
     @Test
     void givenAmount_whenCredit_thanExpectedBalance() {
