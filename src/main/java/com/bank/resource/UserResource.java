@@ -1,26 +1,24 @@
 package com.bank.resource;
 
+import com.bank.domain.User;
 import com.bank.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
+import java.net.URI;
 import java.util.Objects;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 
 @Path("/users")
-@Produces("application/json")
+@Produces(APPLICATION_JSON)
 public class UserResource {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
-
     static final String USER_ID_PARAM = "userId";
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserResource.class);
     private final UserRepository userRepository;
 
     public UserResource(UserRepository userRepository) {
@@ -31,6 +29,15 @@ public class UserResource {
     public Response getAllUsers() {
         return Response
                 .ok(userRepository.getAllUsers())
+                .build();
+    }
+
+    @POST
+    @Consumes(APPLICATION_JSON)
+    public Response save(User user) {
+        final var userId = userRepository.save(user);
+        return Response
+                .created(URI.create("http://localhost:8080/users/" + userId))
                 .build();
     }
 
