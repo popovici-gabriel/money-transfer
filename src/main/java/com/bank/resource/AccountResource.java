@@ -15,10 +15,11 @@ import java.util.Optional;
 
 import static com.bank.domain.Account.USD;
 import static java.util.Objects.requireNonNull;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Path("/accounts")
-@Produces("application/json")
+@Produces(APPLICATION_JSON)
 public class AccountResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AccountResource.class);
@@ -68,6 +69,7 @@ public class AccountResource {
     }
 
     @POST
+    @Consumes(APPLICATION_JSON)
     public Response save(final Account account) {
         if (account == null || account.getUserId() == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
@@ -77,7 +79,7 @@ public class AccountResource {
     }
 
     @PUT
-    @Path("/{" + ACCOUNT_ID_PARAM + "}/debit/{" + AMOUNT_PARAM + "}")
+    @Path("/{" + ACCOUNT_ID_PARAM + "}/debit-operation/{" + AMOUNT_PARAM + "}")
     public Response debit(@PathParam(ACCOUNT_ID_PARAM) final Long accountId,
                           @PathParam(AMOUNT_PARAM) final String amount) {
         if (accountId == null || amount == null) {
@@ -100,7 +102,7 @@ public class AccountResource {
     }
 
     @PUT
-    @Path("/{" + ACCOUNT_ID_PARAM + "}/credit/{" + AMOUNT_PARAM + "}")
+    @Path("/{" + ACCOUNT_ID_PARAM + "}/credit-operation/{" + AMOUNT_PARAM + "}")
     public Response credit(@PathParam(ACCOUNT_ID_PARAM) final Long accountId,
                            @PathParam(AMOUNT_PARAM) final String amount) {
         if (accountId == null || amount == null) {
