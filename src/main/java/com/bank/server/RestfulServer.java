@@ -1,6 +1,9 @@
 package com.bank.server;
 
+import com.bank.repository.AccountRepository;
 import com.bank.repository.UserRepository;
+import com.bank.resource.AccountResource;
+import com.bank.resource.TransferResource;
 import com.bank.resource.UserResource;
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.apache.cxf.endpoint.Server;
@@ -16,8 +19,11 @@ public class RestfulServer {
     public static void start() {
         JAXRSServerFactoryBean factoryBean = new JAXRSServerFactoryBean();
         factoryBean.setAddress(address());
-        factoryBean.setResourceClasses(UserResource.class);
+        factoryBean.setResourceClasses(UserResource.class, AccountResource.class, TransferResource.class);
         factoryBean.setResourceProvider(new SingletonResourceProvider(new UserResource(new UserRepository())));
+        final var accountRepository = new AccountRepository();
+        factoryBean.setResourceProvider(new SingletonResourceProvider(new AccountResource(accountRepository)));
+        factoryBean.setResourceProvider(new SingletonResourceProvider(new TransferResource(accountRepository)));
         factoryBean.setProvider(new JacksonJsonProvider());
         server = factoryBean.create();
     }
