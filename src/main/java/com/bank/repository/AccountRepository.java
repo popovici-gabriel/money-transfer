@@ -39,7 +39,7 @@ public class AccountRepository {
 
     public Account findByAccountId(long accountId) throws AccountNotFound {
         final var account = accounts.getOrDefault(accountId, EMPTY_ACCOUNT);
-        if (account.isEmptyAccount()) {
+        if (isEmpty(account)) {
             throw new AccountNotFound(String.format("Account %s not found", accountId));
         }
         return account;
@@ -58,5 +58,9 @@ public class AccountRepository {
                 .values()
                 .stream()
                 .collect(Collectors.toList());
+    }
+
+    private boolean isEmpty(Account account) {
+        return account.equals(EMPTY_ACCOUNT);
     }
 }

@@ -1,0 +1,8 @@
+{
+  "accountId": 1,
+  "userId": "GP",
+  "balance": {
+    "amount": 120.00,
+    "currency": "USD"
+  }
+}

@@ -111,7 +111,4 @@ public class Account {
         return Objects.hash(accountId);
     }
 
-    public boolean isEmptyAccount() {
-        return EMPTY_ACCOUNT.equals(this);
-    }
 }
