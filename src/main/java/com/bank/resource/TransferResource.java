@@ -28,8 +28,9 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 public class TransferResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TransferResource.class);
-    private static final String ACCOUNT_ID_PARAM = "accountId";
     private static final String AMOUNT_PARAM = "amount";
+    private static final String FROM = "from";
+    private static final String TO = "to";
 
     private final AccountRepository accountRepository;
     private final TransferService transferService;
@@ -40,9 +41,9 @@ public class TransferResource {
     }
 
     @POST
-    @Path("/{" + ACCOUNT_ID_PARAM + "}" + "/{" + ACCOUNT_ID_PARAM + "}" + "/{" + AMOUNT_PARAM + "}")
-    public Response transfer(@PathParam(ACCOUNT_ID_PARAM) final Long fromAccountId,
-                             @PathParam(ACCOUNT_ID_PARAM) final Long toAccountId,
+    @Path("/{" + FROM + "}" + "/{" + TO + "}" + "/{" + AMOUNT_PARAM + "}")
+    public Response transfer(@PathParam(FROM) final Long fromAccountId,
+                             @PathParam(TO) final Long toAccountId,
                              @PathParam(AMOUNT_PARAM) final String amount) {
         if (fromAccountId == null
                 || amount == null
