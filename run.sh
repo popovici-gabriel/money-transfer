@@ -1,8 +1,6 @@
 #!/bin/bash
 
-echo '--> About to run Revolut Bank Money Transfer App...'
-java -jar target/money-transfer-1.0.0-SNAPSHOT.jar
-
+echo '--> About to test the REST API...'
 echo '------------------------------------------'
 echo '------------------------------------------'
 
@@ -27,7 +25,7 @@ curl -X POST \
     "currency": "USD"
   }
 }
-'
+' | jq
 curl -X POST \
   http://localhost:8080/accounts \
   -H 'Accept: */*' \
@@ -48,7 +46,7 @@ curl -X POST \
     "currency": "USD"
   }
 }
-'
+' | jq
 
 curl -X POST \
   http://localhost:8080/transfer/1/2/10 \
@@ -61,8 +59,31 @@ curl -X POST \
   -H 'Host: localhost:8080' \
   -H 'Postman-Token: 4c7f4879-4ea5-4437-8838-1810ecbb5893,351599fa-08ba-4bd3-9cee-af53e8d79792' \
   -H 'User-Agent: PostmanRuntime/7.19.0' \
-  -H 'cache-control: no-cache'
+  -H 'cache-control: no-cache' | jq
 
+
+curl -X GET \
+  http://localhost:8080/accounts/1 \
+  -H 'Accept: */*' \
+  -H 'Accept-Encoding: gzip, deflate' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -H 'Host: localhost:8080' \
+  -H 'Postman-Token: 35205acd-b6a7-41d2-87ac-d66c61186ca3,45d72db4-0d82-4097-9fc9-8a69e04d5f71' \
+  -H 'User-Agent: PostmanRuntime/7.19.0' \
+  -H 'cache-control: no-cache' | jq
+
+
+curl -X GET \
+  http://localhost:8080/accounts/2 \
+  -H 'Accept: */*' \
+  -H 'Accept-Encoding: gzip, deflate' \
+  -H 'Cache-Control: no-cache' \
+  -H 'Connection: keep-alive' \
+  -H 'Host: localhost:8080' \
+  -H 'Postman-Token: 35205acd-b6a7-41d2-87ac-d66c61186ca3,45d72db4-0d82-4097-9fc9-8a69e04d5f71' \
+  -H 'User-Agent: PostmanRuntime/7.19.0' \
+  -H 'cache-control: no-cache' | jq
 
 echo '------------------------------------------'
 echo '----------------THE END-------------------'
