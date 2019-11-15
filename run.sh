@@ -6,8 +6,6 @@ java -jar target/money-transfer-1.0.0-SNAPSHOT.jar
 echo '------------------------------------------'
 echo '------------------------------------------'
 
-echo '------------------------------------------'
-echo '----------------THE END-------------------'
 
 curl -X POST \
   http://localhost:8080/accounts \
@@ -65,3 +63,6 @@ curl -X POST \
   -H 'User-Agent: PostmanRuntime/7.19.0' \
   -H 'cache-control: no-cache'
 
+
+echo '------------------------------------------'
+echo '----------------THE END-------------------'
