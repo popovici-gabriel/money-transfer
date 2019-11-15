@@ -41,11 +41,21 @@ ACID as in a Database.
 | HTTP METHOD | PATH | USAGE |
 | -----------| ------ | ------ |
 | GET | /users/{userName} | get user by user name | 
-| POST | /users| update user | 
+| POST | /users| create user | 
 | GET | /accounts/{accountId} | get account by accountId | 
-| PUT | /account/create | create a new account
+| POST | /accounts | create a new account
+| GET | /accounts | read all accounts 
 | DELETE | /accounts/{accountId} | remove account by accountId | 
 | PUT | /accounts/{accountId}/debit/{amount} | withdraw money from account | 
 | PUT | /accounts/{accountId}/credit/{amount} | deposit money to account | 
 | POST | /transfer/{from}/{to}/{amount} | perform transaction between 2 user accounts | 
+
+
+- 200 OK: The request has succeeded
+- 400 Bad Request: The request could not be understood by the server 
+- 404 Not Found: The requested resource cannot be found
+- 500 Internal Server Error: The server encountered an unexpected condition 
+
+### Scripts 
+Please find start.sh and run.sh for usages on how to use the API 
 
