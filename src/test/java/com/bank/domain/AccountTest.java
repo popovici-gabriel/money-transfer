@@ -1,14 +1,20 @@
 package com.bank.domain;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.stream.IntStream;
+import com.bank.server.RestfulServer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.IntStream;
+
 import static com.bank.domain.Account.USD;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.javamoney.moneta.Money.of;
@@ -84,5 +90,15 @@ class AccountTest {
         // then
         await().atMost(2, SECONDS).until(() -> operations.getCount() == 0);
         org.assertj.core.api.Assertions.assertThat(account.getBalance()).isEqualTo(of(40, USD));
+    }
+
+    @Test
+    void shouldDeserializeAccount() throws IOException {
+        final var objectMapper = RestfulServer.objectMapper();
+        final var account = objectMapper.readValue(Files.readString(Path.of("src/test/resources/account.json")), Account.class);
+        assertThat(account).isNotNull();
+        assertThat(account.getAccountId()).isEqualTo(1L);
+        assertThat(account.getUserId()).isEqualTo("GP");
+        assertThat(account.getBalance()).isEqualTo(of(120, USD));
     }
 }

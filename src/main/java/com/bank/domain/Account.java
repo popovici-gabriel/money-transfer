@@ -1,34 +1,36 @@
 package com.bank.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.javamoney.moneta.Money;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.money.CurrencyUnit;
+import javax.money.Monetary;
 import java.util.Objects;
 import java.util.StringJoiner;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-import javax.money.CurrencyUnit;
-import javax.money.Monetary;
-import org.javamoney.moneta.Money;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import static java.util.Objects.requireNonNull;
+
 import static com.bank.domain.Validator.validateAmountNotNegative;
+import static java.util.Objects.requireNonNull;
 import static org.javamoney.moneta.Money.of;
 
 public class Account {
-    private static final Logger LOGGER = LoggerFactory.getLogger(Account.class);
-
     public static final CurrencyUnit USD = Monetary.getCurrency("USD");
-
     public static final Account EMPTY_ACCOUNT = new Account(-1, "EMPTY", of(0, USD));
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(Account.class);
     private final long accountId;
 
     private final String userId;
-
+    private final ReadWriteLock lock;
     private Money balance;
 
-    private final ReadWriteLock lock;
-
-    public Account(long accountId, String userId, Money balance) {
+    @JsonCreator
+    public Account(@JsonProperty("accountId") long accountId,
+                   @JsonProperty("userId") String userId,
+                   @JsonProperty("balance") Money balance) {
         requireNonNull(userId, "Number cannot be null");
         requireNonNull(balance, "Balance cannot be null");
         validateAmountNotNegative(balance);
