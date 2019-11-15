@@ -18,7 +18,7 @@ Implicit requirements:
 Please put your work on github or bitbucket. 
 
 ## API 
-Application starts using a CXF simple server on localhost port 8080 An H2 in memory database. 
+Application starts using a CXF simple jetty server on localhost port 8080 An H2 in memory database. 
 For this exercise the Accounts are not stored in DB. 
 Reason for doing so is due to exercise. 
 ACID operations could have been isolated in a SQL batch like this:
