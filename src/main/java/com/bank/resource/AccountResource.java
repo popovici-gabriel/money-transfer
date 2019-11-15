@@ -79,7 +79,7 @@ public class AccountResource {
     }
 
     @PUT
-    @Path("/{" + ACCOUNT_ID_PARAM + "}/debit-operation/{" + AMOUNT_PARAM + "}")
+    @Path("/{" + ACCOUNT_ID_PARAM + "}/debit/{" + AMOUNT_PARAM + "}")
     public Response debit(@PathParam(ACCOUNT_ID_PARAM) final Long accountId,
                           @PathParam(AMOUNT_PARAM) final String amount) {
         if (accountId == null || amount == null) {
@@ -102,7 +102,7 @@ public class AccountResource {
     }
 
     @PUT
-    @Path("/{" + ACCOUNT_ID_PARAM + "}/credit-operation/{" + AMOUNT_PARAM + "}")
+    @Path("/{" + ACCOUNT_ID_PARAM + "}/credit/{" + AMOUNT_PARAM + "}")
     public Response credit(@PathParam(ACCOUNT_ID_PARAM) final Long accountId,
                            @PathParam(AMOUNT_PARAM) final String amount) {
         if (accountId == null || amount == null) {

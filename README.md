@@ -17,5 +17,35 @@ Implicit requirements:
 1. The code produced by you is expected to be of high quality. 2. There are no detailed requirements, use common sense. 
 Please put your work on github or bitbucket. 
 
-## Solution
+## API 
+Application starts using a CXF simple server on localhost port 8080 An H2 in memory database. 
+For this exercise the Accounts are not stored in DB. 
+Reason for doing so is due to exercise. 
+ACID operations could have been isolated in a SQL batch like this:
+<p>
+<code>
+BEGIN 
+SELECT ...FOR UPDATE 
+SELECT ...FOR UPDATE 
+UPDATE ACCOUNT 1 
+UPDATE ACCOUNT 2 
+COMMIT
+</code>
+</p> 
+This exercise is focused on using the mutex Lock in JDK to achieve the same 
+ACID as in a Database.  
+
+
+### REST API 
+
+| HTTP METHOD | PATH | USAGE |
+| -----------| ------ | ------ |
+| GET | /users/{userName} | get user by user name | 
+| POST | /users| update user | 
+| GET | /accounts/{accountId} | get account by accountId | 
+| PUT | /account/create | create a new account
+| DELETE | /accounts/{accountId} | remove account by accountId | 
+| PUT | /accounts/{accountId}/debit/{amount} | withdraw money from account | 
+| PUT | /accounts/{accountId}/credit/{amount} | deposit money to account | 
+| POST | /transfer/{from}/{to}/{amount} | perform transaction between 2 user accounts | 
 
