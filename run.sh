@@ -4,86 +4,79 @@ echo '--> About to test the REST API...'
 echo '------------------------------------------'
 echo '------------------------------------------'
 
-
-curl -X POST \
-  http://localhost:8080/accounts \
-  -H 'Accept: */*' \
-  -H 'Accept-Encoding: gzip, deflate' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Connection: keep-alive' \
-  -H 'Content-Length: 102' \
-  -H 'Content-Type: application/json' \
-  -H 'Host: localhost:8080' \
-  -H 'Postman-Token: ba94ff81-b03b-4239-a046-52225c6b7e88,14d7a8b7-78fe-460e-ae81-076b2c365936' \
-  -H 'User-Agent: PostmanRuntime/7.19.0' \
-  -H 'cache-control: no-cache' \
-  -d '{
+echo '{
   "accountId": 1,
   "userId": "GP",
   "balance": {
-    "amount": 120.00,
+    "amount": 100.00,
     "currency": "USD"
   }
 }
-' | jq
-curl -X POST \
-  http://localhost:8080/accounts \
-  -H 'Accept: */*' \
-  -H 'Accept-Encoding: gzip, deflate' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Connection: keep-alive' \
-  -H 'Content-Length: 102' \
-  -H 'Content-Type: application/json' \
-  -H 'Host: localhost:8080' \
-  -H 'Postman-Token: ba94ff81-b03b-4239-a046-52225c6b7e88,14d7a8b7-78fe-460e-ae81-076b2c365936' \
-  -H 'User-Agent: PostmanRuntime/7.19.0' \
-  -H 'cache-control: no-cache' \
-  -d '{
+' |  \
+  http POST http://localhost:8080/accounts \
+  Accept:'*/*' \
+  Accept-Encoding:'gzip, deflate' \
+  Cache-Control:no-cache \
+  Connection:keep-alive \
+  Content-Length:102 \
+  Content-Type:application/json \
+  Host:localhost:8080 \
+  Postman-Token:'2b3aa6aa-6c15-44b4-94c3-013b20f54ab0,0dce41ea-db3b-4dc7-9bb8-47cfac3e142a' \
+  User-Agent:PostmanRuntime/7.19.0 \
+  cache-control:no-cache
+
+
+echo '{
   "accountId": 2,
   "userId": "GP",
   "balance": {
-    "amount": 20.00,
+    "amount": 50.00,
     "currency": "USD"
   }
 }
-' | jq
+' |  \
+  http POST http://localhost:8080/accounts \
+  Accept:'*/*' \
+  Accept-Encoding:'gzip, deflate' \
+  Cache-Control:no-cache \
+  Connection:keep-alive \
+  Content-Length:102 \
+  Content-Type:application/json \
+  Host:localhost:8080 \
+  Postman-Token:'2b3aa6aa-6c15-44b4-94c3-013b20f54ab0,0dce41ea-db3b-4dc7-9bb8-47cfac3e142a' \
+  User-Agent:PostmanRuntime/7.19.0 \
+  cache-control:no-cache
 
-curl -X POST \
-  http://localhost:8080/transfer/1/2/10 \
-  -H 'Accept: */*' \
-  -H 'Accept-Encoding: gzip, deflate' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Connection: keep-alive' \
-  -H 'Content-Length: 102' \
-  -H 'Content-Type: application/json' \
-  -H 'Host: localhost:8080' \
-  -H 'Postman-Token: 4c7f4879-4ea5-4437-8838-1810ecbb5893,351599fa-08ba-4bd3-9cee-af53e8d79792' \
-  -H 'User-Agent: PostmanRuntime/7.19.0' \
-  -H 'cache-control: no-cache' | jq
+  http GET http://localhost:8080/accounts/1 \
+  Accept:'*/*' \
+  Accept-Encoding:'gzip, deflate' \
+  Cache-Control:no-cache \
+  Connection:keep-alive \
+  Host:localhost:8080 \
+  Postman-Token:'e13a7057-7c42-471a-801c-46ccf988e419,c163fc3c-6c5b-4afb-a46c-2ca0b40e59f8' \
+  User-Agent:PostmanRuntime/7.19.0 \
+  cache-control:no-cache
 
+  http GET http://localhost:8080/accounts/2 \
+  Accept:'*/*' \
+  Accept-Encoding:'gzip, deflate' \
+  Cache-Control:no-cache \
+  Connection:keep-alive \
+  Host:localhost:8080 \
+  Postman-Token:'e13a7057-7c42-471a-801c-46ccf988e419,c163fc3c-6c5b-4afb-a46c-2ca0b40e59f8' \
+  User-Agent:PostmanRuntime/7.19.0 \
+  cache-control:no-cache
 
-curl -X GET \
-  http://localhost:8080/accounts/1 \
-  -H 'Accept: */*' \
-  -H 'Accept-Encoding: gzip, deflate' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Connection: keep-alive' \
-  -H 'Host: localhost:8080' \
-  -H 'Postman-Token: 35205acd-b6a7-41d2-87ac-d66c61186ca3,45d72db4-0d82-4097-9fc9-8a69e04d5f71' \
-  -H 'User-Agent: PostmanRuntime/7.19.0' \
-  -H 'cache-control: no-cache' | jq
+  http POST http://localhost:8080/transfer/1/2/50
 
-
-curl -X GET \
-  http://localhost:8080/accounts/2 \
-  -H 'Accept: */*' \
-  -H 'Accept-Encoding: gzip, deflate' \
-  -H 'Cache-Control: no-cache' \
-  -H 'Connection: keep-alive' \
-  -H 'Host: localhost:8080' \
-  -H 'Postman-Token: 35205acd-b6a7-41d2-87ac-d66c61186ca3,45d72db4-0d82-4097-9fc9-8a69e04d5f71' \
-  -H 'User-Agent: PostmanRuntime/7.19.0' \
-  -H 'cache-control: no-cache' | jq
-
+ http GET http://localhost:8080/accounts/2 \
+  Accept:'*/*' \
+  Accept-Encoding:'gzip, deflate' \
+  Cache-Control:no-cache \
+  Connection:keep-alive \
+  Host:localhost:8080 \
+  Postman-Token:'e13a7057-7c42-471a-801c-46ccf988e419,c163fc3c-6c5b-4afb-a46c-2ca0b40e59f8' \
+  User-Agent:PostmanRuntime/7.19.0 \
+  cache-control:no-cache
 echo '------------------------------------------'
 echo '----------------THE END-------------------'
