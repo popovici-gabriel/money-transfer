@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.awaitility.Awaitility.await;
 import static org.javamoney.moneta.Money.of;
 
-class AccountTest {
+class CountingTest {
 
     @Test
     void givenAmount_whenCredit_thanExpectedBalance() {
